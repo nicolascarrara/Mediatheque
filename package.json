@@ -1,0 +1,29 @@
+{
+  "name": "biblio",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "amazon-buddy": "^2.2.12",
+    "axios": "^0.21.0",
+    "cheerio": "^1.0.0-rc.3",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "^3.1.5",
+    "express": "^4.16.4",
+    "express-session": "^1.17.1",
+    "fs": "0.0.1-security",
+    "goodreads-api-node": "0.0.12",
+    "google-books-search": "^0.3.1",
+    "http-errors": "^1.6.3",
+    "jade": "~1.11.0",
+    "mongodb": "^1.2.13",
+    "morgan": "~1.9.1",
+    "multi-isbn": "^0.3.1",
+    "node-isbn": "^1.6.0",
+    "puppeteer": "^5.4.1",
+    "request": "^2.88.2"
+  }
+}

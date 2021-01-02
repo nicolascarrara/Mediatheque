@@ -1,0 +1,27 @@
+.container
+  .row
+    .panel.panel-default
+    .col-md-4.col-sm-6.col-xs-12
+      .panel-heading Connexion
+      .panel-body
+        form(action="/login" method="post")
+          .form-group
+            label(for="login") Login : &nbsp
+            input(type="text" placeholder="Entrez votre login" name="login" id="login")
+          .form-group
+            label(for="password") Mot de passe : &nbsp
+            input(type="password" placeholder="Entrez votre mot de passe" name="password" id="password")
+          button(type="submit" class="btn btn-primary") Valider
+    .col-md-4.col-sm-6.col-xs-12
+      .panel-heading Inscription
+      .panel-body
+        form(action="/inscription" method="post")
+          .form-group
+            label(for="login") Login : &nbsp
+            input(type="text" placeholder="Entrez votre login" name="login" id="login")
+          .form-group
+            label(for="password") Mot de passe : &nbsp
+            input(type="password" placeholder="Entrez votre mot de passe" name="password" id="password")
+          button(type="submit" class="btn btn-primary") Valider
+  script( src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js' )
+  script( src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js' )

@@ -1,0 +1,840 @@
+<%- include('base'); -%>
+
+
+<div class="container-fluid mr-1 ml-1">
+  <div id="spinner" class="spinner-border text-primary" style="display:none" role="status"><span class="sr-only">Loading...</span></div>
+  <div id="search" class="row">
+    <input type="text" name="" value="" id="isbn" placeholder="ISBN"></input>
+    <input type="text" name="" value="" id="title" placeholder="Titre"></input>
+    <button type="button" name="button" onclick="getChasse();">Recherche Chasse-aux-livres</button>
+    <button type="button" name="button" onclick="getAmz();">Recherche Amazon</button>
+    <button type="button" name="button" onclick="getGoodReads();">Recherche GoodReads</button>
+  </div>
+  <div class="row">
+    <div id="booklist" class="col-md-6">
+
+
+
+      </div>
+    <div class="col-md-6">
+
+      <form action="submitadvanced" method="post">
+
+      <div id="accordion">
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseBookState" aria-expanded="true" aria-controls="collapseBookState">
+                Statut
+              </button>
+              <small class="text-muted">   <i class="fas fa-check-circle" style="color:green;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseBookState" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                <select class="form-control" name="status" id="statusform">
+                  <option value="0">Non lu</option>
+                  <option value="1">Lu</option>
+                  <option value="2">En cours</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTitle" aria-expanded="true" aria-controls="collapseTitle">
+                Titre
+              </button>
+                <small id="titlestate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseTitle" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="title" placeholder="Titre" id="titleform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseCover" aria-expanded="true" aria-controls="collapseCover">
+                Couverture
+              </button>
+                <small id="coverstate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseCover" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <img src="" class="card-img" style="max-width:100px" id="imagepreview" alt="">
+              <div class="form-group">
+                <input type="text" class="form-control" name="cover" placeholder="Lien couverture" id="imageform">
+              </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseGenre" aria-expanded="true" aria-controls="collapseGenre">
+                Genre
+              </button>
+                <small id="genrestate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseGenre" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="genre" placeholder="Genre" id="genreform">
+              </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseResume" aria-expanded="true" aria-controls="collapseResume">
+                Résumé
+              </button>
+                <small id="resumestate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseResume" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <textarea rows="3" class="form-control" name="resume" placeholder="Résumé" id="resumeform"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseCategorie" aria-expanded="true" aria-controls="collapseCategorie">
+                Catégorie
+              </button>
+                <small id="categorystate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseCategorie" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="categorie" placeholder="Catégorie" id="categoryform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseAuthor" aria-expanded="true" aria-controls="collapseAuthor">
+                Auteur
+              </button>
+                <small id="authorstate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseAuthor" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="auteur" placeholder="Auteur" id="authorform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseYear" aria-expanded="true" aria-controls="collapseYear">
+                Année de sortie
+              </button>
+                <small id="yearstate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseYear" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="datesortie" placeholder="Année de sortie" id="Yearform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button"  data-toggle="collapse" data-target="#collapseCollection" aria-expanded="true" aria-controls="collapseCollection">
+                Collection
+              </button>
+                <small id="collectionstate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseCollection" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="collection" placeholder="Collection" id="collectionform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+                Nombre de pages
+              </button>
+                <small id="pagesstate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapsePages" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="pages" placeholder="Nombre de pages" id="pagesform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFormat" aria-expanded="true" aria-controls="collapseFormat">
+                Format
+              </button>
+                <small id="formatstate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseFormat" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="format" placeholder="Format" id="formatform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseEditor" aria-expanded="true" aria-controls="collapseEditor">
+                Editeur
+              </button>
+                <small id="editorstate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseEditor" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="editeur" placeholder="Editeur" id="editorform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseLanguage" aria-expanded="true" aria-controls="collapseLanguage">
+                Langue
+              </button>
+                <small id="languagestate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseLanguage" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="langue" placeholder="Langue" id="languageform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseISBN10" aria-expanded="true" aria-controls="collapseISBN10">
+                ISBN-10
+              </button>
+                <small id="ISBN10state" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseISBN10" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="isbn10" placeholder="ISBN-10" id="ISBN10form">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseISBN13" aria-expanded="true" aria-controls="collapseISBN13">
+                ISBN13
+              </button>
+                <small id="ISBN13state" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseISBN13" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="isbn13" placeholder="ISBN13" id="ISBN13form">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseSize" aria-expanded="true" aria-controls="collapseSize">
+                Taille
+              </button>
+                <small id="sizestate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseSize" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="size" placeholder="Taille" id="sizeform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsePrice" aria-expanded="true" aria-controls="collapsePrice">
+                Prix
+              </button>
+                <small id="pricestate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapsePrice" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="price" placeholder="Prix" id="priceform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseMedian" aria-expanded="true" aria-controls="collapseMedian">
+                Prix moyen
+              </button>
+                <small id="medianstate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseMedian" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="median"  placeholder="Prix moyen" id="medianform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseAmazon" aria-expanded="true" aria-controls="collapseAmazon">
+                Lien Amazon
+              </button>
+                <small id="amazonstate" class="text-muted">   <i class="fas fa-question-circle" style="color:red;"></i></small>
+            </h5>
+          </div>
+
+          <div id="collapseAmazon" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+              <div class="form-group">
+                  <input type="text" class="form-control" name="amazon" placeholder="Lien Amazon" id="amazonform">
+              </div>
+            </div>
+          </div>
+        </div>
+
+</div>
+<input type="submit" class="btn btn-primary" value="Valider">
+
+</form>
+
+
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+
+  function $_GET(param) {
+  	var vars = {};
+  	window.location.href.replace( location.hash, '' ).replace(
+  		/[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
+  		function( m, key, value ) { // callback
+  			vars[key] = value !== undefined ? value : '';
+  		}
+  	);
+
+  	if ( param ) {
+  		return vars[param] ? vars[param] : null;
+  	}
+  	return vars;
+  }
+
+  function getChasse(){
+    if (document.getElementById('title').value!='') {
+    var request = {
+      isbn: document.getElementById('isbn').value,
+      title:document.getElementById('title').value
+    }
+    var xhr = new window.XMLHttpRequest()
+    xhr.open('POST', '/isbnlook', true)
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+    xhr.send(JSON.stringify(request))
+    xhr.onreadystatechange = function(){
+     if(xhr.readyState == 4 && xhr.status == 200){
+       var jsonResponse = JSON.parse(xhr.responseText);
+       console.log(jsonResponse);
+     }else if(xhr.readyState == 4 && xhr.status != 200){
+       alert('ko');
+     }
+   }
+ }
+  }
+
+  function getAmz(){
+    var request = {
+      isbn: document.getElementById('isbn').value,
+      title:document.getElementById('title').value
+    }
+  //  console.log(request);
+document.getElementById('search').style.display="none";
+document.getElementById('spinner').style.display= 'block';
+    var xhr = new window.XMLHttpRequest()
+    xhr.open('POST', '/amzlist', true)
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+    xhr.send(JSON.stringify(request))
+    xhr.onreadystatechange = function(){
+     if(xhr.readyState == 4 && xhr.status == 200){
+       var jsonResponse = JSON.parse(xhr.responseText);
+
+       if (jsonResponse.result.length>5) {
+         for(var i= 0; i < 5; i++)
+            {
+                 console.log(jsonResponse.result[i]);
+                 var card = document.createElement("div")
+                 card.classList.add("card","border-secondary","mb-3");
+                 card.id=jsonResponse.result[i].asin;
+                 card.style.maxWidth = "";
+                 htmldata='<div class="card-header">Amazon</div><div class="card-body">'
+                 htmldata=htmldata+'<h4 class="card-title">'+jsonResponse.result[i].title+'</h4>'
+                 htmldata=htmldata+'<p class="card-text"><img style="max-width:100px" src="'+jsonResponse.result[i].thumbnail+'" alt=""></p><button type="button" onclick="amazonDetails(\''+jsonResponse.result[i].asin+'\')" class="btn btn-primary">Détails</button></div>'
+                 card.innerHTML=htmldata;
+                $( "#booklist" ).append(card);
+            }
+       }else{
+       jsonResponse.result.forEach(function(element){
+           var card = document.createElement("div")
+           card.classList.add("card","border-secondary","mb-3");
+           card.id=element.asin;
+          // card.style.maxWidth = "20rem";
+           htmldata='<div class="card-header">Amazon</div><div class="card-body">'
+           htmldata=htmldata+'<h4 class="card-title">'+element.title+'</h4>'
+           htmldata=htmldata+'<p class="card-text"><img style="max-width:100px" src="'+element.thumbnail+'" alt=""></p><button type="button" onclick="amazonDetails(\''+element.asin+'\')" class="btn btn-primary">Détails</button></div>'
+           card.innerHTML=htmldata;
+          $( "#booklist" ).append(card);
+       });
+       }
+       document.getElementById('search').style.display="block";
+       document.getElementById('spinner').style.display= 'none';
+       //console.log(jsonResponse)
+     }else if(xhr.readyState == 4 && xhr.status != 200){
+       alert('ko');
+     }
+   }
+  }
+
+  function getGoodReads(){
+    var request = {
+      isbn: document.getElementById('isbn').value,
+      title:document.getElementById('title').value
+    }
+  //  console.log(request);
+    document.getElementById('search').style.display="none";
+    document.getElementById('spinner').style.display= 'block';
+    var xhr = new window.XMLHttpRequest()
+    xhr.open('POST', '/goodreadslist', true)
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+    xhr.send(JSON.stringify(request))
+    xhr.onreadystatechange = function(){
+     if(xhr.readyState == 4 && xhr.status == 200){
+       var jsonResponse = JSON.parse(xhr.responseText);
+        console.log(jsonResponse);
+        if(!Array.isArray(jsonResponse)){
+          element=jsonResponse.best_book
+          console.log(element);
+           var card = document.createElement("div")
+           card.classList.add("card","border-secondary","mb-3");
+           card.id=element.id._;
+           //card.style.maxWidth = "20rem";
+           htmldata='<div class="card-header">GoodReads</div><div class="card-body">'
+           htmldata=htmldata+'<h4 class="card-title">'+element.title+'</h4>'
+           htmldata=htmldata+'<p class="card-text"><img style="max-width:100px" src="'+element.image_url+'" alt=""></p><button type="button" onclick="goodreadsDetails(\''+element.id._+'\')" class="btn btn-primary">Détails</button></div>'
+           card.innerHTML=htmldata;
+          $( "#booklist" ).append(card);
+
+        }else{
+      if (jsonResponse.length>5) {
+         for(var i= 0; i < 5; i++)
+            {
+                 console.log(jsonResponse[i]);
+                 var card = document.createElement("div")
+                 card.classList.add("card","border-secondary","mb-3");
+                 card.id=jsonResponse[i].best_book.id._;
+                 card.style.maxWidth = "20rem";
+                 htmldata='<div class="card-header">Google</div><div class="card-body">'
+                 htmldata=htmldata+'<h4 class="card-title">'+jsonResponse[i].best_book.title+'</h4>'
+                 htmldata=htmldata+'<p class="card-text"><img style="max-width:100px" src="'+jsonResponse[i].best_book.image_url+'" alt=""></p><button type="button" onclick="googleDetails(\''+jsonResponse[i].best_book.id._+'\')" class="btn btn-primary">Détails</button></div>'
+                 card.innerHTML=htmldata;
+                $( "#booklist" ).append(card);
+            }
+       }else{
+       jsonResponse.forEach(function(element){
+       console.log(element);
+        var card = document.createElement("div")
+        card.classList.add("card","border-secondary","mb-3");
+        card.id=element.best_book.id._;
+        //card.style.maxWidth = "20rem";
+        htmldata='<div class="card-header">Google</div><div class="card-body">'
+        htmldata=htmldata+'<h4 class="card-title">'+element.best_book.title+'</h4>'
+        htmldata=htmldata+'<p class="card-text"><img style="max-width:100px" src="'+element.best_book.image_url+'" alt=""></p><button type="button" onclick="googleDetails(\''+element.best_book.id._+'\')" class="btn btn-primary">Détails</button></div>'
+        card.innerHTML=htmldata;
+       $( "#booklist" ).append(card);
+     });
+     }
+   }
+       document.getElementById('search').style.display="block";
+       document.getElementById('spinner').style.display= 'none';
+       //console.log(jsonResponse)
+     }else if(xhr.readyState == 4 && xhr.status != 200){
+       alert('ko');
+     }
+   }
+  }
+
+  function amazonDetails(asin){
+    console.log(asin);
+    var request = {
+      asin: asin
+    }
+    cardinfo=document.getElementById(asin)
+    cardinfo.lastChild.append('<div id="spinner" class="spinner-border text-primary" style="display:none" role="status"><span class="sr-only">Loading...</span></div>')
+    var xhr = new window.XMLHttpRequest()
+    xhr.open('POST', '/amzdetails', true)
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+    xhr.send(JSON.stringify(request))
+    xhr.onreadystatechange = function(){
+     if(xhr.readyState == 4 && xhr.status == 200){
+       var jsonResponse = JSON.parse(xhr.responseText);
+       jsonResponse= jsonResponse.result[0]
+        card=document.getElementById(jsonResponse.asin)
+       htmldata='<div class="card-header">Amazon</div><div class="card-body">'
+       htmldata=htmldata+'<h4 class="card-title">'+jsonResponse.title+'<button type="button" class="btn btn-primary" onclick="addTitle(\''+escape(jsonResponse.title)+'\')" name="button">Ajouter</button></h4>'
+       htmldata=htmldata+'<p class="card-text"><img style="max-width:100px" src="'+jsonResponse.main_image+'" class="card-img" alt=""><button type="button" class="btn btn-primary" onclick="addImage(\''+jsonResponse.main_image+'\')" name="button">Ajouter</button></p><ul class="list-group">'
+       htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Résumé : '+jsonResponse.description+'<button type="button" class="btn btn-primary" onclick="addResume(\''+escape(jsonResponse.description)+'\')" name="button">Ajouter</button></li>'
+       htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Catégorie : '+jsonResponse.categories[1].category+'<button type="button" class="btn btn-primary" onclick="addCategory(\''+jsonResponse.categories[1].category+'\')" name="button">Ajouter</button></li>'
+       if (jsonResponse.categories[2]) {
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Genre : '+jsonResponse.categories[2].category+'<button type="button" class="btn btn-primary" onclick="addGenre(\''+jsonResponse.categories[2].category+'\')" name="button">Ajouter</button></li>'
+
+       }else {
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Genre : Inconnu <button type="button" class="btn btn-primary" onclick="addGenre(\'Inconnu\')" name="button">Ajouter</button></li>'
+
+       }
+       if (jsonResponse.authors) {
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Auteur : '+jsonResponse.authors[0].author+'<button type="button" onclick="addAuthor(\''+jsonResponse.authors[0].author+'\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }else{
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Auteur : Inconnu<button type="button" onclick="addAuthor(\'Inconnu\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+
+       }
+       htmldata=htmldata+'</ul></div>'
+       card.innerHTML=htmldata;
+       console.log(jsonResponse)
+       console.log(jsonResponse.product_information)
+       console.log(jsonResponse.price)
+     }else if(xhr.readyState == 4 && xhr.status != 200){
+       alert('ko');
+     }
+   }
+  }
+
+  function goodreadsDetails(id){
+    var request = {
+      id: id
+    }
+    cardinfo=document.getElementById(id)
+    cardinfo.lastChild.append('<div id="spinner" class="spinner-border text-primary" style="display:none" role="status"><span class="sr-only">Loading...</span></div>')
+    var xhr = new window.XMLHttpRequest()
+    xhr.open('POST', '/goodreadsdetails', true)
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+    xhr.send(JSON.stringify(request))
+    xhr.onreadystatechange = function(){
+     if(xhr.readyState == 4 && xhr.status == 200){
+       var jsonResponse = JSON.parse(xhr.responseText);
+       console.log(jsonResponse.book)
+        card=document.getElementById(jsonResponse.book.id)
+       htmldata='<div class="card-header">GoodReads</div><div class="card-body">'
+       htmldata=htmldata+'<h4 class="card-title">'+jsonResponse.book.title+'<button type="button" class="btn btn-primary" onclick="addTitle(\''+escape(jsonResponse.book.title)+'\')" name="button">Ajouter</button></h4>'
+       htmldata=htmldata+'<p class="card-text"><img style="max-width:100px" src="'+jsonResponse.book.image_url+'" class="card-img" alt=""><button type="button" class="btn btn-primary" onclick="addImage(\''+jsonResponse.book.image_url+'\')" name="button">Ajouter</button></p><ul class="list-group">'
+       htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Résumé : '+jsonResponse.book.description+'<button type="button" class="btn btn-primary" onclick="addResume(\''+escape(jsonResponse.book.description)+'\')" name="button">Ajouter</button></li>'
+       if (Array.isArray(jsonResponse.book.popular_shelves.shelf)) {
+         genders=jsonResponse.book.popular_shelves.shelf
+         if (genders.length>5) {
+           for(var i= 0; i < 5; i++)
+              {
+                htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Catégorie : '+genders[i].name+'<button type="button" class="btn btn-primary" onclick="addCategory(\''+genders[i].name+'\')" name="button">Ajouter</button></li>';
+                htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Genre : '+genders[i].name+'<button type="button" class="btn btn-primary" onclick="addGenre(\''+genders[i].name+'\')" name="button">Ajouter</button></li>';
+
+              }
+         }else {
+           genders.forEach(function(element){
+
+              htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Catégorie : '+element.name+'<button type="button" class="btn btn-primary" onclick="addCategory(\''+element.name+'\')" name="button">Ajouter</button></li>';
+              htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Genre : '+element.name+'<button type="button" class="btn btn-primary" onclick="addGenre(\''+element.name+'\')" name="button">Ajouter</button></li>';
+           });
+         }
+
+
+       }else {
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Catégorie : Inconnu <button type="button" class="btn btn-primary" onclick="addCategory(\'Inconnu\')" name="button">Ajouter</button></li>'
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Genre : Inconnu <button type="button" class="btn btn-primary" onclick="addGenre(\'Inconnu\')" name="button">Ajouter</button></li>'
+       }
+       if (jsonResponse.book.authors.author[0]) {
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Auteur : '+jsonResponse.book.authors.author[0].name+'<button type="button" onclick="addAuthor(\''+jsonResponse.book.authors.author[0].name+'\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }else{
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Auteur : Inconnu<button type="button" onclick="addAuthor(\'Inconnu\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }
+
+       if (jsonResponse.book.publication_year) {
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Année de publication : '+jsonResponse.book.publication_year+'<button type="button" onclick="addDate(\''+jsonResponse.book.publication_year+'\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }else{
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Année de publication : Inconnue<button type="button" onclick="addDate(\'Inconnue\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }
+       if (jsonResponse.book.publisher) {
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Editeur: '+jsonResponse.book.publisher+'<button type="button" onclick="addPublisher(\''+jsonResponse.book.publisher+'\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }else{
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Editeur : Inconnu<button type="button" onclick="addPublisher(\'Inconnu\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }
+       if (jsonResponse.book.isbn) {
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">ISBN: '+jsonResponse.book.isbn+'<button type="button" onclick="addISBN(\''+jsonResponse.book.isbn+'\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }else{
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">ISBN : Inconnu<button type="button" onclick="addISBN(\'Inconnu\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }
+       if (jsonResponse.book.isbn13) {
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">ISBN13: '+jsonResponse.book.isbn13+'<button type="button" onclick="addISBN13(\''+jsonResponse.book.isbn13+'\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }else{
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">ISBN13 : Inconnu<button type="button" onclick="addISBN13(\'Inconnu\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }
+       if (jsonResponse.book.language_code) {
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Langue: '+jsonResponse.book.language_code+'<button type="button" onclick="addLanguage(\''+jsonResponse.book.language_code+'\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }else{
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Langue : Inconnue<button type="button" onclick="addLanguage(\'Inconnue\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }
+       if (jsonResponse.book.num_pages) {
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Nombre de pages: '+jsonResponse.book.num_pages+'<button type="button" onclick="addPage(\''+jsonResponse.book.num_pages+'\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }else{
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Nombre de pages : Inconnu<button type="button" onclick="addPage(\'Inconnu\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }
+       if (jsonResponse.book.format) {
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Format : '+jsonResponse.book.format+'<button type="button" onclick="addFormat(\''+jsonResponse.book.format+'\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }else{
+         htmldata=htmldata+'<li class="list-group-item d-flex justify-content-between align-items-center">Format : Inconnu<button type="button" onclick="addFormat(\'Inconnu\')" class="btn btn-primary" name="button">Ajouter</button></li>'
+       }
+
+
+
+
+
+       htmldata=htmldata+'</ul></div>'
+       card.innerHTML=htmldata;
+     }else if(xhr.readyState == 4 && xhr.status != 200){
+       alert('ko');
+     }
+   }
+  }
+
+function addImage(imglink){
+  imgform=document.getElementById('imageform')
+  preview=document.getElementById('imagepreview')
+  state=document.getElementById('coverstate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  preview.setAttribute("src",imglink);
+  imgform.value=imglink;
+}
+
+function addTitle(title){
+  titleform=document.getElementById('titleform')
+  state=document.getElementById('titlestate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  titleform.value=unescape(title);
+}
+
+function addAuthor(author){
+  authorform=document.getElementById('authorform')
+  state=document.getElementById('authorstate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  authorform.value=author;
+}
+
+function addGenre(genre){
+  genreform=document.getElementById('genreform')
+  state=document.getElementById('genrestate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  genreform.value=genre;
+}
+function addCategory(category){
+  categoryform=document.getElementById('categoryform')
+  state=document.getElementById('categorystate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  categoryform.value=category;
+}
+
+function addResume(resume){
+  resumeform=document.getElementById('resumeform')
+  state=document.getElementById('resumestate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  resumeform.value=unescape(resume);
+}
+
+function addDate(date){
+  dateform=document.getElementById('Yearform')
+  state=document.getElementById('yearstate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  dateform.value=unescape(date);
+}
+
+function addCollection(collection){
+  collectionform=document.getElementById('collectionform')
+  state=document.getElementById('collectionstate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  collectionform.value=unescape(collection);
+}
+
+function addPublisher(publisher){
+  editorform=document.getElementById('editorform')
+  state=document.getElementById('editorstate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  editorform.value=unescape(publisher);
+}
+
+function addPage(pages){
+  pagesform=document.getElementById('pagesform')
+  state=document.getElementById('pagesstate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  pagesform.value=unescape(pages);
+}
+
+function addFormat(format){
+  formatform=document.getElementById('formatform')
+  state=document.getElementById('formatstate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  formatform.value=unescape(format);
+}
+
+function addLanguage(langue){
+  languageform=document.getElementById('languageform')
+  state=document.getElementById('languagestate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  languageform.value=unescape(langue);
+}
+
+function addISBN(isbn){
+  ISBN10form=document.getElementById('ISBN10form')
+  state=document.getElementById('ISBN10state')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  ISBN10form.value=unescape(isbn);
+}
+
+function addISBN13(isbn13){
+  ISBN13form=document.getElementById('ISBN13form')
+  state=document.getElementById('ISBN13state')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  ISBN13form.value=unescape(isbn13);
+}
+
+function addSize(size){
+  sizeform=document.getElementById('sizeform')
+  state=document.getElementById('sizestate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  sizeform.value=unescape(isbn13);
+}
+
+function addPrice(price){
+  priceform=document.getElementById('priceform')
+  state=document.getElementById('pricestate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  priceform.value=unescape(price);
+}
+
+function AddMedian(price){
+  medianform=document.getElementById('medianform')
+  state=document.getElementById('medianstate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  medianform.value=unescape(price);
+}
+
+function AddAmzLink(amz){
+  amazonform=document.getElementById('amazonform')
+  state=document.getElementById('amazonstate')
+  state.innerHTML='<i class="fas fa-check-circle" style="color:green;"></i>'
+  amazonform.value=unescape(amz);
+}
+
+window.addEventListener('load', function() {
+  var isbn = decodeURI( $_GET( 'isbn' ) );
+  if (isbn!== null&& isbn!=="null") {
+    document.getElementById('isbn').value=isbn;
+  }
+})
+
+$('.collapse').collapse()
+
+</script>

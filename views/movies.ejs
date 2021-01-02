@@ -1,0 +1,401 @@
+
+<%- include('base'); -%>
+<style media="screen">
+
+</style>
+<div class="container ">
+
+  <div class="row mt-3 mb-3">
+<div class="col-8">
+
+  <div class="form-group">
+    <div id="spinner" class="spinner-border text-primary" style="display:none" role="status"><span class="sr-only">Loading...</span></div>
+
+      <div id="formaddbook" class="input-group mb-3">
+          <input type="text" class="form-control" id="isbn" name="isbn" placeholder="Entrer isbn">
+        <div class="input-group-append">
+          <button  class="input-group-text btn btn-primary" type="button" onclick="addBook()">Ajouter</button>
+           <button  class="btn btn-primary" type="button" onclick="addBookAdvanced()">Ajout avancé</button>
+        </div>
+      </div>
+    </div>
+
+      <div id="response">
+
+      </div>
+
+
+
+    </div>
+    <div class="ml-auto col-4">
+    <ul class="list-group">
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        Nombre de films :
+        <%   if(typeof price !== 'undefined'){ %>
+        <span class="badge badge-primary badge-pill"><%= price.count %></span>
+        <% }else{ %>
+          <span class="badge badge-primary badge-pill">0</span>
+        <% } %>
+      </li>
+    </ul>
+    </div>
+  </div>
+
+
+  <div id="booklist" class="row justify-content-between">
+    <div id="cardempty" class="card border-primary mb-3" style="max-width: 30%;display:none;">
+
+      <div class="card-header" style="overflow:hidden;"><h5  id="cardtitle"></h5></div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4">
+            <img id="cardimg" src="" class="card-img" alt="...">
+          </div>
+          <div class="col-md-8">
+          <h4 class="card-title"></h4>
+          <p class="card-text" id="cardresume"></p>
+          <a id="carddetails" href="">Détails</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-footer text-muted">
+        <div class="row">
+        <span id="status"></span>
+          <ul id="actionbutton" class="pagination ml-auto"></ul>
+              </div>
+          </div>
+
+    </div>
+  <% movies.forEach(function(movie){ %>
+  <div id="<%= movie._id %>" class="card border-primary mb-3" style="max-width: 30%;">
+
+    <div class="card-header" style="overflow:hidden;"><h5><%= movie.movie.title%></h5></div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <img src="<%= movie.movie.cover %>" class="card-img" alt="...">
+        </div>
+        <div class="col-md-8">
+        <h4 class="card-title"></h4>
+        <p class="card-text"><%= movie.movie.resume.substring(0, 100) %>...</p>
+        <a href="/details?id=<%= movie._id %>">Détails</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card-footer text-muted">
+      <div class="row">
+
+
+      <span id="status">
+      <% switch (movie.movie.state) {
+        case '0' : %>
+        <p class="text-warning">Non lu</p>
+                <% break;
+        case '1' : %>
+        <p class="text-success">Lu</p>
+
+                <% break;
+        case '2' : %>
+        <p class="text-info">En cours</p>
+                <% break;
+        } %>
+        </span>
+
+        <ul id="actionbutton" class="pagination ml-auto">
+
+        <% switch (movie.movie.state) {
+              case '0' : %>
+
+          <li class="page-item"><button type="button" class="btn btn-primary" onclick="lu('<%= movie._id %>')" name="button"><i  class="fas fa-clipboard-check"></i></button></li>
+              <li class="page-item"><button type="button" class="btn btn-primary" onclick="inprogress('<%= movie._id %>')" name="button"><i class="fas fa-book-reader"></i></button></li>
+
+                      <% break;
+              case '1' : %>
+              <li class="page-item"><button type="button" class="btn btn-primary" onclick="alire('<%= movie._id %>')" name="button"><i class="fas fa-eye-slash"></i></button></li>
+              <li class="page-item"><button type="button" class="btn btn-primary" onclick="inprogress('<%= movie._id %>')" name="button"><i class="fas fa-book-reader"></i></button></li>
+                      <% break;
+              case '2' : %>
+            <li class="page-item"><button type="button" class="btn btn-primary" onclick="alire('<%= movie._id %>')" name="button"><i class="fas fa-eye-slash"></i></button></li>
+              <li class="page-item"><button type="button" class="btn btn-primary" onclick="lu('<%= movie._id %>')" name="button"><i class="fas fa-clipboard-check"></i></button></li>
+
+                      <% break;
+              } %>
+              <li class="page-item"><button type="button" class="btn btn-primary" onclick="deletebook('<%= movie._id %>')" name="button"><i class="fas fa-trash-alt"></i></button></li>
+
+            </ul>
+            </div>
+        </div>
+
+  </div>
+
+  <% })%>
+
+  </div>
+<!--
+  <div class="row d-flex justify-content-between">
+    <% movies.forEach(function(movie){ %>
+  <div class="card d-flex justify-content-between mb-2" style="max-width: 540px;">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <img src="<%= movie.movie.cover %>" class="card-img" alt="...">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title"><%= movie.movie.title %></h5>
+            <hr>
+            <p class="card-text"><%= movie.movie.resume.substring(0, 100) %>...</p>
+
+          </div>
+          <div class="card-footer"><% switch (movie.movie.state) {
+            case '0' : %>
+            Non lu
+                    <% break;
+            case '1' : %>
+            Lu
+                    <% break;
+            case '2' : %>
+            En cours
+                    <% break;
+            } %></div>
+        </div>
+
+      </div>
+
+    </div>
+    <% }) %>
+  </div>
+  -->
+  <!--
+  <div class="row">
+    <div class="panel panel-default"></div>
+    <div class="col-md-12 col-sm-12 col-xs-13">
+      <h4 class="panel-heading">A lire :</h4>
+      <div class="panel-body">
+
+        <table class="table" id="myTable">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Nom du livre</th>
+              <th>Genre</th>
+              <th>Statut</th>
+              <th>Prix moyen</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% movies.forEach(function(movie){ %>
+              <tr>
+              <td><a href="/details?id=<%= movie._id %>"><img src="<%= movie.movie.cover %>"/></a></td>
+              <td><a href="/details?id=<%= movie._id %>"><strong><%= movie.movie.title %></strong></a></td>
+              <td><%= movie.movie.genre %></td>
+              <td><% switch (movie.movie.state) {
+                case '0' : %>
+                Non lu
+                        <% break;
+                case '1' : %>
+                Lu
+                        <% break;
+                case '2' : %>
+                En cours
+                        <% break;
+                } %></td>
+              <td><%= movie.movie.median %></td>
+              <td>
+                <% switch (movie.movie.state) {
+                  case '0' : %>
+              <button type="button" class="btn btn-primary" onclick="lu('<%= movie._id %>')" name="button"><i  class="fas fa-clipboard-check"></i></button>
+                  <a href="/updateinprogress?id=<%= movie._id %>"><i class="fas fa-book-reader"></i></a>
+                          <% break;
+                  case '1' : %>
+                  <a href="/updatealire?id=<%= movie._id %>"><i class="fas fa-eye-slash"></i></a>
+                  <a href="/updateinprogress?id=<%= movie._id %>"><i class="fas fa-book-reader"></i></a>
+                          <% break;
+                  case '2' : %>
+                  <a href="/updatealire?id=<%= movie._id %>"><i class="fas fa-eye-slash"></i></a>
+                  <a href="/updatelu?id=<%= movie._id %>"><i class="fas fa-clipboard-check"></i></a>
+
+                          <% break;
+                  } %>
+                  <a href="/delete?id=<%= movie._id %>"><i class="fas fa-trash-alt"></i></a>
+                </td>
+              </tr>
+              <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  -->
+
+  <link href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet"/>
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+  <script>
+    function inprogress(id){
+      var id = {
+        id : id
+      }
+      var xhr = new window.XMLHttpRequest()
+      xhr.open('POST', '/updateinprogress', true)
+      xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+      xhr.send(JSON.stringify(id))
+      xhr.onreadystatechange = function(){
+       if(xhr.readyState == 4 && xhr.status == 200){
+         var jsonResponse = JSON.parse(xhr.responseText);
+         refreshBook(jsonResponse);
+         console.log(jsonResponse);
+       }else if(xhr.readyState == 4 && xhr.status != 200){
+         alert('ko');
+       }
+     }
+    }
+    function alire(id){
+      var id = {
+        id : id
+      }
+      var xhr = new window.XMLHttpRequest()
+      xhr.open('POST', '/updatealire', true)
+      xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+      xhr.send(JSON.stringify(id))
+      xhr.onreadystatechange = function(){
+       if(xhr.readyState == 4 && xhr.status == 200){
+         var jsonResponse = JSON.parse(xhr.responseText);
+         refreshBook(jsonResponse);
+         console.log(jsonResponse);
+       }else if(xhr.readyState == 4 && xhr.status != 200){
+         console.log('ko');
+       }
+     }
+    }
+    function deletebook(id){
+      var id = {
+        id : id
+      }
+      var xhr = new window.XMLHttpRequest()
+      xhr.open('POST', '/delete', true)
+      xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+      xhr.send(JSON.stringify(id))
+      xhr.onreadystatechange = function(){
+       if(xhr.readyState == 4 && xhr.status == 200){
+          var jsonResponse = JSON.parse(xhr.responseText);
+          removeBook(jsonResponse.id);
+       }else if(xhr.readyState == 4 && xhr.status != 200){
+         console.log('ko');
+       }
+     }
+    }
+    function lu(id){
+      var id = {
+        id : id
+      }
+      var xhr = new window.XMLHttpRequest()
+      xhr.open('POST', '/updatelu', true)
+      xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+      xhr.send(JSON.stringify(id))
+      xhr.onreadystatechange = function(){
+       if(xhr.readyState == 4 && xhr.status == 200){
+          var jsonResponse = JSON.parse(xhr.responseText);
+          refreshBook(jsonResponse);
+          console.log(jsonResponse);
+       }else if(xhr.readyState == 4 && xhr.status != 200){
+         console.log('ko');
+       }
+     }
+    }
+    function refreshBook(bookdata){
+      let bookelem=document.getElementById(bookdata._id);
+      bookelem.querySelector("#status").innerHTML=statefromint(bookdata.book.state);
+      bookelem.querySelector("#actionbutton").innerHTML=actionfromint(bookdata.book.state,bookdata._id);
+    }
+    function removeBook(id){
+      var el = document.getElementById(id);
+      el.remove();
+    }
+
+    function statefromint(state){
+      switch (state) {
+        case '0':
+          return "Non Lu"
+          break;
+          case '1':
+            return "Lu"
+            break;
+            case '2':
+              return "En cours"
+              break;
+        default:
+          return "Oops"
+          break;
+      }
+    }
+
+    function actionfromint(state,id){
+      switch (state) {
+        case '0':
+          return '<li class="page-item"><button type="button" class="btn btn-primary" onclick="lu(\''+id+'\')" name="button"><i  class="fas fa-clipboard-check"></i></button></li><li class="page-item"><button type="button" class="btn btn-primary" onclick="inprogress(\''+id+'\')" name="button"><i class="fas fa-book-reader"></i></button></li>'
+          break;
+          case '1':
+            return '<li class="page-item"><button type="button" class="btn btn-primary" onclick="alire(\''+id+'\')" name="button"><i class="fas fa-eye-slash"></i></button></li><li class="page-item"><button type="button" class="btn btn-primary" onclick="inprogress(\''+id+'\')" name="button"><i class="fas fa-book-reader"></i></button></li>'
+            break;
+            case '2':
+              return '<li class="page-item"><button type="button" class="btn btn-primary" onclick="alire(\''+id+'\')" name="button"><i class="fas fa-eye-slash"></i></button></li><li class="page-item"><button type="button" class="btn btn-primary" onclick="lu(\''+id+'\')" name="button"><i  class="fas fa-clipboard-check"></i></button></li>'
+              break;
+        default:
+          return "Oops"
+          break;
+      }
+    }
+    function populateBook(bookdata){
+          let newcard=document.getElementById('cardempty').cloneNode(true);
+          console.log(bookdata);
+          newcard.id=bookdata._id;
+          newcard.querySelector("#cardtitle").innerHTML=bookdata.book.title;
+          newcard.querySelector('#cardresume').innerHTML=bookdata.book.title;
+          newcard.querySelector('#cardimg').setAttribute("src",bookdata.book.cover);
+          newcard.querySelector('#carddetails').setAttribute("href", "/details?id="+bookdata._id);
+          newcard.querySelector("#status").innerHTML=statefromint(bookdata.book.state);
+          newcard.querySelector("#actionbutton").innerHTML=actionfromint(bookdata.book.state,bookdata._id);
+          document.getElementById('booklist').append(newcard);
+          newcard.style.display= 'block';
+    }
+    function addBookAdvanced(){
+      window.location.replace("/addbookadvanced?isbn="+document.getElementById('isbn').value);
+
+    }
+       function addBook () {
+         let form=document.getElementById('formaddbook');
+         var isbn = {
+           isbn: document.getElementById('isbn').value
+         }
+         document.getElementById('formaddbook').style.display="none";
+         document.getElementById('spinner').style.display= 'block';
+         var xhr = new window.XMLHttpRequest()
+         xhr.open('POST', '/addbook', true)
+         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+         xhr.send(JSON.stringify(isbn))
+         xhr.onreadystatechange = function(){
+      		if(xhr.readyState == 4 && xhr.status == 200){
+            var jsonResponse = JSON.parse(xhr.responseText);
+            populateBook(jsonResponse);
+            flash=document.getElementById('response');
+            flash.innerHTML='<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Parfait ! </strong> "<b>'+jsonResponse.book.title+'</b>" a correctement été ajouté !</div>';
+      		}else if(xhr.readyState == 4 && xhr.status != 200){
+              flash=document.getElementById('response');
+              flash.innerHTML='<div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Oh mince!</strong> il semblerait qu\'il n\'y ait aucun résultat pour cet ISBN.</div>'
+          }
+          document.getElementById('formaddbook').style.display="flex";
+          document.getElementById('spinner').style.display= 'none';
+      	}
+       }
+     </script>
+  <script type="text/javascript">
+    $(document).ready( function () {
+      $('#myTable').DataTable();
+    } );
+  </script>
+</div>

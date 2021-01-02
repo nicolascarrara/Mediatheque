@@ -1,0 +1,14 @@
+.container
+  .row
+    .panel.panel-default
+    .col-md-4.col-sm-6.col-xs-12
+      .panel-heading Ajout livre
+      .panel-body
+        form(action="/addbook" method="post")
+          .form-group
+            label(for="isbn") ISBN : &nbsp
+            input(type="text" placeholder="Entrez l'ISBN" name="isbn" id="isbn")
+          button(type="submit" class="btn btn-primary") Valider
+          #{test}
+  script( src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js' )
+  script( src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js' )

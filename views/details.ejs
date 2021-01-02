@@ -1,0 +1,69 @@
+<%- include('base'); -%>
+
+<div class="container">
+    <hr class="my-4">
+    <div class="row">
+    <div class="col-md-4">
+      <div class="panel-body"><img src="<%= book.book.cover %>"/></div>
+    </div>
+    <div class="col-md-8">
+        <h3 class="small"><%=book.book.author%></h3>
+        <h1 class="  mb-5 pt-md-2 pt-sm-4"><%= book.book.title%> </h1>
+        <p><%= book.book.resume%></p>
+    </div>
+    <br>
+</div>
+<hr class="my-4">
+<div class="row">
+    <div class="col-md-4">
+        <p><h6>Auteur : </h6><%= book.book.author %></p>
+        <p><h6>Collection : </h6><%= book.book.collection %></p>
+        <hr>
+        <p>Paru en <i><%= book.book.date %></i> chez <i><%= book.book.editor %></i></p>
+        <p><%= book.book.page %> Pages au format <i>  <%= book.book.format %> </i></p>
+    </div>
+
+    <div class="col-md-4">
+        <p><h6>Genre : </h6><% if (book.book.genre) { %>
+              <%= book.book.genre %>
+          <% } else{ %>
+              <i>Non renseigné</i>
+          <% } %> </p>
+          <p><h6>Catégorie :</h6> <% if (book.book.link) { %>
+                <%= book.book.link %>
+            <% } else{ %>
+                <i>Non renseigné</i>
+            <% } %> </p>
+        <p><h6>Langue :</h6> <% if (book.book.language) { %>
+              <%= book.book.language %>
+          <% } else{ %>
+              <i>Non renseigné</i>
+          <% } %> </p>
+    </div>
+    <div class="col-md-4">
+      <p><h6>Prix  :</h6> <% if (book.book.price) { %>
+            <%= book.book.price %>€
+        <% } else{ %>
+            <i>Prix non renseigné</i>
+        <% } %> </p>
+
+      <p><h6>Taille :</h6> <% if (book.book.size) { %>
+            <%= book.book.size %>
+        <% } else{ %>
+            <i>Non renseignée</i>
+        <% } %> </p>
+      <p><h6>Prix moyen :</h6><% if (book.book.median) { %>
+            <%= book.book.median %>€
+        <% } else{ %>
+            <i>Prix non renseigné</i>
+        <% } %> </p>
+    </div>
+
+  </div>
+
+  <p class="d-flex justify-content-center">
+      <a href="<%= book.book.amazon%>" class="btn btn-dark shadow-lg">Voir sur Amazon</a>
+  </p>
+  <hr class="my-4">
+
+</div>

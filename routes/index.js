@@ -285,15 +285,17 @@ router.get('/', async function(req, res, next) {
      if (err) throw err;
    //console.log(result);
    let pricesum='';
-   db.collection('books').aggregate({
+   
+   db.collection('books').aggregate([{
             "$group" : {
                "_id" : "$book.genre",
                "totalPrice": { "$sum":"$book.price"},
                "totalMedianPrice": {"$sum":"$book.median"},
                "count": { "$sum": 1 }
             }
-       },function(err, priceresult){
-  //console.log(priceresult)
+       }],function(err, priceresult){
+  console.log(err)
+  console.log(priceresult)
   listeprix=[]
   listeprix["count"]=0
   listeprix["totalPrice"]=0

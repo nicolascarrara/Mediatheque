@@ -250,12 +250,25 @@ router.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}))
 const MongoClient = mongodb.MongoClient
 var db
 var sess
-
-MongoClient.connect('mongodb://nico:zG55iE3MuExHtrCZ@localhost/biblio?authSource=biblio&w=1', (err, database) => {
+MongoClient.connect
+/*
+('mongodb+srv://nico:zG55iE3MuExHtrCZ@cluster0.blsp1.mongodb.net/biblio?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }, (err, database) => {
+//MongoClient.connect('mongodb://nico:zG55iE3MuExHtrCZ@localhost/biblio?authSource=biblio&w=1', (err, database) => {
   if (err) return console.log(err)
   db = database
   console.log('connection bdd OK')
 })
+*/
+
+
+MongoClient.connect('mongodb+srv://nico:zG55iE3MuExHtrCZ@cluster0.blsp1.mongodb.net?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
+  //MongoClient.connect('mongodb://nico:zG55iE3MuExHtrCZ@localhost/biblio?authSource=biblio&w=1', (err, database) => {
+  if (err) return console.log(err)
+  db = client.db('biblio');
+  console.log('connection bdd OK')
+
+})
+
 
 
 /* GET home page. */
@@ -281,7 +294,6 @@ router.get('/', async function(req, res, next) {
             }
        },function(err, priceresult){
   //console.log(priceresult)
-  db.close();
   listeprix=[]
   listeprix["count"]=0
   listeprix["totalPrice"]=0
@@ -305,18 +317,20 @@ router.get('/', async function(req, res, next) {
 
    })
  }else{
-  return res.render('login.jade')
+  return res.render('login.ejs')
  }
 
 });
 
 router.post('/inscription', (req, res) => {
-  db.collection('users').save(req.body, (err, result) => {
+  console.log(req.body)
+  db.collection('users').insertOne(req.body, (err, result) => {
     if (err) {
-      return res.render('login.jade',{inscription: 'false'})}
+      console.log(err)
+      return res.render('login.ejs',{inscription: 'false'})}
     else{
       console.log('Enregistré dans la bdd')
-      return res.render('login.jade',{inscription: 'true'})
+      return res.render('login.ejs',{inscription: 'true'})
     }
   })
 })
@@ -350,7 +364,7 @@ router.post('/delete', (req, res) => {
      }
    });
  }else{
-   return res.render('login.jade')
+   return res.render('login.ejs')
  }
  })
 
@@ -359,7 +373,7 @@ router.post('/delete', (req, res) => {
    if(sess.login){
         return res.render('advanced',{sess:sess.login})
       }else{
-   return res.render('login.jade')
+   return res.render('login.ejs')
  }
  })
 
@@ -370,7 +384,7 @@ router.post('/addbook', async(req, res) => {
 //    axios.get(siteUrl+req.body.isbn)
   //   .then((response) => {
   puppeteer
-    .launch({executablePath: '/usr/bin/chromium-browser'})
+    .launch({ args: ['--no-sandbox'] })
     .then(browser => browser.newPage())
     .then(page => {
       console.log(req.body.isbn);
@@ -502,7 +516,7 @@ router.post('/addbook', async(req, res) => {
 
 
   //console.log(book);
-  db.collection('books').save({book}, function(err, r) {
+  db.collection('books').insertOne({book}, function(err, r) {
     if (err) {
       res.status(500).send()
     }
@@ -510,11 +524,11 @@ router.post('/addbook', async(req, res) => {
       try {
       if (fs.existsSync(pathfile)) {
           console.log('image deja dl')
-          res.status(200).send(r)
+        res.status(200).send(r.ops[0])
          }else{
           download(cover, pathfile, () => {
           console.log('✅ Done!')
-          res.status(200).send(r)
+          res.status(200).send(r.ops[0])
         })
         }
       } catch(err) {
@@ -534,7 +548,7 @@ router.post('/addbook', async(req, res) => {
   });
 
   }else{
-    return res.render('login.jade')
+    return res.render('login.ejs')
   }
 })
 
@@ -582,7 +596,7 @@ router.post('/login', (req, res) => {
   var myquery = { login: req.body.login, password: req.body.password};
   db.collection("users").findOne(myquery, function(err, result) {
     if (err){
-     return res.render('login.jade',{connexion: 'false'})
+     return res.render('login.ejs',{connexion: 'false'})
     }else{
       sess=req.session;
       sess.login=req.body.login;

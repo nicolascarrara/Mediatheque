@@ -29,7 +29,8 @@ const MongoClient = mongodb.MongoClient
 var db
 var sess
 
-MongoClient.connect('mongodb://nico:zG55iE3MuExHtrCZ@localhost/biblio?authSource=biblio&w=1', (err, database) => {
+MongoClient.connect('mongodb+srv://nico:zG55iE3MuExHtrCZ@cluster0.blsp1.mongodb.net/biblio?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }, (err, database) => {
+//MongoClient.connect('mongodb://nico:zG55iE3MuExHtrCZ@localhost/biblio?authSource=biblio&w=1', (err, database) => {
   if (err) return console.log(err)
   db = database
   console.log('connection bdd OK')
@@ -48,7 +49,7 @@ router.get('/', async function(req, res, next) {
     return res.render('movies.ejs', {movies: result, sess: sess.login})
    })
  }else{
-  return res.render('login.jade')
+  return res.render('login.ejs')
  }
 
 });

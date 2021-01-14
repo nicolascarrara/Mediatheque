@@ -18,12 +18,11 @@
     "goodreads-api-node": "0.0.12",
     "google-books-search": "^0.3.1",
     "http-errors": "^1.6.3",
-    "jade": "~1.11.0",
-    "mongodb": "^1.2.13",
+    "mongodb": "^3.6.3",
     "morgan": "~1.9.1",
     "multi-isbn": "^0.3.1",
-    "node-isbn": "^1.6.0",
-    "puppeteer": "^5.4.1",
+    "node-isbn": "^1.3.0",
+    "puppeteer": "^5.5.0",
     "request": "^2.88.2"
   }
 }

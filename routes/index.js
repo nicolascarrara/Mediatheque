@@ -250,16 +250,6 @@ router.use(session({ secret: 'ssshhhhh', saveUninitialized: true, resave: true }
 const MongoClient = mongodb.MongoClient
 var db
 var sess
-MongoClient.connect
-/*
-('mongodb+srv://nico:zG55iE3MuExHtrCZ@cluster0.blsp1.mongodb.net/biblio?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }, (err, database) => {
-//MongoClient.connect('mongodb://nico:zG55iE3MuExHtrCZ@localhost/biblio?authSource=biblio&w=1', (err, database) => {
-  if (err) return console.log(err)
-  db = database
-  console.log('connection bdd OK')
-})
-*/
-
 
 MongoClient.connect(process.env['DATABASE_URL'], { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
 	//MongoClient.connect('mongodb://nico:zG55iE3MuExHtrCZ@localhost/biblio?authSource=biblio&w=1', (err, database) => {
@@ -268,8 +258,6 @@ MongoClient.connect(process.env['DATABASE_URL'], { useNewUrlParser: true, useUni
 	console.log('connection bdd OK')
 
 })
-
-
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -325,34 +313,26 @@ router.post('/inscription', (req, res) => {
 	})
 })
 
-router.post('/delete', (req, res) => {
-	db.collection("books").findOne({ _id: new mongodb.ObjectID(req.body.id) }, function (err, result) {
-		if (err) {
-			console.log(e)
-		} else {
-			console.log(result)
-
-			fs.unlinkSync(result.book.cover)
-			console.log(result)
+router.post('/delete', async function (req, res) {
+	if (sess.login) {
+		let Books = db.collection('books')
+		const result = await Books.findOne({ _id: new mongodb.ObjectID(req.body.id)});
+		fs.unlinkSync(result.book.cover)
+	 	const resultat = await Books.remove({ _id: new mongodb.ObjectID(req.body.id) }, { justOne: true });
+		if	(resultat){
+			res.status(200).send(JSON.stringify({ 'id': req.body.id }))
 		}
-	});
-	db.collection('books').remove({ _id: new mongodb.ObjectID(req.body.id) }, { justOne: true }, (err, result) => {
-		if (err) return console.log(err)
-
-		res.status(200).send(JSON.stringify({ 'id': req.body.id }))
-	})
+	}else{
+		return res.render('login.ejs')
+	}
 })
 
-router.get('/details', (req, res) => {
+router.get('/details', async function (req, res) {
 	sess = req.session
 	if (sess.login) {
-		db.collection("books").findOne({ _id: new mongodb.ObjectID(req.query.id) }, function (err, result) {
-			if (err) {
-				console.log(e)
-			} else {
-				return res.render('details', { book: result, sess: sess.login })
-			}
-		});
+		let Books = db.collection('books')
+		const result = await Books.findOne({ _id: new mongodb.ObjectID(req.query.id) });
+		return res.render('details', { book: result, sess: sess.login })
 	} else {
 		return res.render('login.ejs')
 	}

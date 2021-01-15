@@ -250,6 +250,7 @@ router.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}))
 const MongoClient = mongodb.MongoClient
 var db
 var sess
+MongoClient.connect
 /*
 ('mongodb+srv://nico:zG55iE3MuExHtrCZ@cluster0.blsp1.mongodb.net/biblio?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }, (err, database) => {
 //MongoClient.connect('mongodb://nico:zG55iE3MuExHtrCZ@localhost/biblio?authSource=biblio&w=1', (err, database) => {
@@ -261,7 +262,7 @@ var sess
 
 
 MongoClient.connect(process.env['DATABASE_URL'], { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
-  //MongoClient.connect('mongodb://nico:zG55iE3MuExHtrCZ@localhost/biblio?authSource=biblio&w=1', (err, database) => {
+    //MongoClient.connect('mongodb://nico:zG55iE3MuExHtrCZ@localhost/biblio?authSource=biblio&w=1', (err, database) => {
   if (err) return console.log(err)
   db = client.db('biblio');
   console.log('connection bdd OK')
@@ -285,7 +286,7 @@ router.get('/', async function(req, res, next) {
    //console.log(result);
    let pricesum='';
 
-   Books.aggregate([{
+   db.collection('books').aggregate([{
             "$group" : {
                "_id" : "$book.genre",
                "totalPrice": { "$sum":"$book.price"},

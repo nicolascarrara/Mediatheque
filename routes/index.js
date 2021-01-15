@@ -252,7 +252,6 @@ var db
 var sess
 
 MongoClient.connect(process.env['DATABASE_URL'], { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
-	//MongoClient.connect('mongodb://nico:zG55iE3MuExHtrCZ@localhost/biblio?authSource=biblio&w=1', (err, database) => {
 	if (err) return console.log(err)
 	db = client.db('biblio');
 	console.log('connection bdd OK')
@@ -351,8 +350,6 @@ router.post('/addbook', async (req, res) => {
 	pathfile = './public/images/';
 	sess = req.session
 	if (sess.login) {
-		//    axios.get(siteUrl+req.body.isbn)
-		//   .then((response) => {
 		puppeteer
 			.launch({ args: ['--no-sandbox'] })
 			.then(browser => browser.newPage())

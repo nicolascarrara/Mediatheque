@@ -285,8 +285,8 @@ router.get('/', async function(req, res, next) {
      if (err) throw err;
    //console.log(result);
    let pricesum='';
-   
-   db.collection('books').aggregate([{
+
+   Books.aggregate([{
             "$group" : {
                "_id" : "$book.genre",
                "totalPrice": { "$sum":"$book.price"},
@@ -561,8 +561,8 @@ router.post('/updateinprogress', (req, res) => {
  db.collection('books').findAndModify(myquery, [] ,newvalues,
         {new:true}, function(err, book) {
    if (err) throw err;
-   console.log(book);
- res.status(200).send(book)  //  return res.send(book);
+   //console.log(book.value);
+ res.status(200).send(book.value)  //  return res.send(book);
    console.log("1 livre mis a jour");
  });
 });
@@ -575,7 +575,7 @@ router.post('/updatelu', (req, res) => {
         {new:true}, function(err, book) {
    if (err) throw err;
    console.log(book);
-res.status(200).send(book)  //  return res.send(book);
+          res.status(200).send(book.value)  //  return res.send(book);
    console.log("1 livre mis a jour");
  });
 
@@ -589,7 +589,7 @@ router.post('/updatealire', (req, res) => {
         {new:true}, function(err, book) {
    if (err) throw err;
    console.log(book);
- res.status(200).send(book)  //  return res.send(book);
+          res.status(200).send(book.value)  //  return res.send(book);
    console.log("1 livre mis a jour");
  });
 });

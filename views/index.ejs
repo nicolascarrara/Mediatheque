@@ -305,21 +305,20 @@
       }
     }
     function populateBook(bookdata){
-          let newcard=document.getElementById('cardempty').cloneNode(true);
-          console.log(bookdata);
-          newcard.id=bookdata._id;
-          newcard.querySelector("#cardtitle").innerHTML=bookdata.book.title;
-          newcard.querySelector('#cardresume').innerHTML=bookdata.book.title;
-          newcard.querySelector('#cardimg').setAttribute("src",bookdata.book.cover);
-          newcard.querySelector('#carddetails').setAttribute("href", "/details?id="+bookdata._id);
-          newcard.querySelector("#status").innerHTML=statefromint(bookdata.book.state);
-          newcard.querySelector("#actionbutton").innerHTML=actionfromint(bookdata.book.state,bookdata._id);
-          document.getElementById('booklist').append(newcard);
-          newcard.style.display= 'block';
+      let newcard=document.getElementById('cardempty').cloneNode(true);
+      console.log(bookdata);
+      newcard.id=bookdata._id;
+      newcard.querySelector("#cardtitle").innerHTML=bookdata.book.title;
+      newcard.querySelector('#cardresume').innerHTML=bookdata.book.title;
+      newcard.querySelector('#cardimg').setAttribute("src",bookdata.book.cover);
+      newcard.querySelector('#carddetails').setAttribute("href", "/details?id="+bookdata._id);
+      newcard.querySelector("#status").innerHTML=statefromint(bookdata.book.state);
+      newcard.querySelector("#actionbutton").innerHTML=actionfromint(bookdata.book.state,bookdata._id);
+      document.getElementById('booklist').append(newcard);
+      newcard.style.display= 'block';
     }
     function addBookAdvanced(){
       window.location.replace("/addbookadvanced?isbn="+document.getElementById('isbn').value);
-
     }
        function addBook () {
          let form=document.getElementById('formaddbook');

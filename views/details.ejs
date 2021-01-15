@@ -1,69 +1,158 @@
 <%- include('base'); -%>
 
-<div class="container">
+<style>
+    textarea {
+  resize: none;
+}
+ textarea.nostyle:disabled {
+    background: none;
+    border:0;
+    padding:0;
+    width: 100%;
+    height: fit-content;
+}
+input.nostyle:disabled {
+    background: none;
+    border:0;
+
+}
+.h1input{
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+.textinput{
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: .75rem;
+    color: #1a1a1a;
+}
+
+.scroll-vertical::-webkit-scrollbar {
+  height: 5px;
+}
+
+/* Track */
+.scroll-vertical::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 40px rgba(0,0,0,0.3); 
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}
+
+/* Handle */
+.scroll-vertical::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  background: rgba(73, 73, 73, 0.8); 
+  -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.5); 
+}
+.scroll-vertical::-webkit-scrollbar-thumb:window-inactive {
+background:rgba(73, 73, 73, 0.8); 
+}
+</style>
+<div class="container" id="formdetail">
+    <form action="updatebook" method="POST">
+        <input type="hidden" name="id" value="<%= book._id %>">
     <hr class="my-4">
     <div class="row">
     <div class="col-md-4">
       <div class="panel-body"><img src="<%= book.book.cover %>"/></div>
     </div>
     <div class="col-md-8">
+        <button type="button" onclick="deletebook('<%= book._id %>')" class="close ml-2"><span aria-hidden="true"><i class="fas fa-trash-alt"></i></span></button>
+        <button type="button" onclick="prepareupdate()" class="close ml-2"><span aria-hidden="true"><i class="fas fa-edit"></i></span></button>
         <h3 class="small"><%=book.book.author%></h3>
-        <h1 class="  mb-5 pt-md-2 pt-sm-4"><%= book.book.title%> </h1>
-        <p><%= book.book.resume%></p>
+       <textarea class="form-control nostyle h1input mb-1 scroll-vertical" name="title" placeholder="Titre" disabled id="titleform" rows="5" cols="15" ><%= book.book.title%></textarea>
+        <p><textarea name="resume" id="" cols="30" class="form-control scroll-vertical nostyle" disabled rows="10"><%= book.book.resume%></textarea></p>
     </div>
     <br>
 </div>
 <hr class="my-4">
 <div class="row">
     <div class="col-md-4">
-        <p><h6>Auteur : </h6><%= book.book.author %></p>
-        <p><h6>Collection : </h6><%= book.book.collection %></p>
+        <p><h6>Auteur : </h6><input type="text" name="author" class="nostyle textinput" disabled value="<%= book.book.author %>"></p>
+        <p><h6>Collection : </h6><input type="text" name="collection" class="nostyle textinput" disabled value="<%= book.book.collection %>"></p>
         <hr>
-        <p>Paru en <i><%= book.book.date %></i> chez <i><%= book.book.editor %></i></p>
-        <p><%= book.book.page %> Pages au format <i>  <%= book.book.format %> </i></p>
+        <p>Paru en <i><input type="text" name="date" class="nostyle textinput" disabled value="<%= book.book.date %>"></i> chez <i><input type="text" name="editor" class="nostyle textinput" disabled value="<%= book.book.editor %>"></i></p>
+        <p><input type="text" name="page" class="nostyle textinput" disabled value="<%= book.book.page %>"> Pages au format <i> <input type="text" name="format" class="nostyle textinput" disabled value="<%= book.book.format %>"> </i></p>
     </div>
 
     <div class="col-md-4">
         <p><h6>Genre : </h6><% if (book.book.genre) { %>
-              <%= book.book.genre %>
+            <input type="text" name="genre" class="nostyle textinput" disabled value="<%= book.book.genre %>">
           <% } else{ %>
-              <i>Non renseigné</i>
+            <i><input type="text" name="genre" class="nostyle textinput" disabled value="Non renseigné"></i>
           <% } %> </p>
           <p><h6>Catégorie :</h6> <% if (book.book.link) { %>
-                <%= book.book.link %>
+                <input type="text" name="link" class="nostyle textinput" disabled value="<%= book.book.link %>">
             <% } else{ %>
-                <i>Non renseigné</i>
+                <i><input type="text" name="link" class="nostyle textinput" disabled value="Non renseigné"></i>
             <% } %> </p>
         <p><h6>Langue :</h6> <% if (book.book.language) { %>
-              <%= book.book.language %>
+            <input type="text" name="language" class="nostyle textinput" disabled value="<%= book.book.language %>">
           <% } else{ %>
-              <i>Non renseigné</i>
+              <i><input type="text" name="language" class="nostyle textinput" disabled value="Non renseigné"></i>
           <% } %> </p>
     </div>
     <div class="col-md-4">
       <p><h6>Prix  :</h6> <% if (book.book.price) { %>
-            <%= book.book.price %>€
+            <input type="text" name="price" class="nostyle textinput" disabled value="<%= book.book.price %>">€
         <% } else{ %>
-            <i>Prix non renseigné</i>
+            <i><input type="text" name="price" class="nostyle textinput" disabled value="Prix non renseigné"></i>
         <% } %> </p>
 
       <p><h6>Taille :</h6> <% if (book.book.size) { %>
-            <%= book.book.size %>
+            <input type="text" name="size" class="nostyle textinput" disabled value="<%= book.book.size %>">
         <% } else{ %>
-            <i>Non renseignée</i>
+            <i><input type="text" name="size" class="nostyle textinput" disabled value="Non renseignée"></i>
         <% } %> </p>
       <p><h6>Prix moyen :</h6><% if (book.book.median) { %>
-            <%= book.book.median %>€
+        <input type="text" name="median" class="nostyle textinput" disabled value="<%= book.book.median %>">€
         <% } else{ %>
-            <i>Prix non renseigné</i>
+            <i><input type="text" name="median" class="nostyle textinput" disabled value="Prix non renseigné"></i>
         <% } %> </p>
     </div>
+    
 
   </div>
+    <input type="submit" id="submitmodif" style="display:none" class="btn btn-dark shadow-lg" value="Modifier">
+
 
   <p class="d-flex justify-content-center">
-      <a href="<%= book.book.amazon%>" class="btn btn-dark shadow-lg">Voir sur Amazon</a>
+
+      <a href="<%= book.book.amazon %>" class="btn btn-dark shadow-lg">Voir sur Amazon</a>
   </p>
   <hr class="my-4">
-
+</form>
 </div>
+
+<script>
+
+    function deletebook(id) {
+        var id = {
+            id: id
+        }
+        var xhr = new window.XMLHttpRequest()
+        xhr.open('POST', '/delete', true)
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+        xhr.send(JSON.stringify(id))
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var jsonResponse = JSON.parse(xhr.responseText);
+                window.location.href = "/";
+            } else if (xhr.readyState == 4 && xhr.status != 200) {
+                console.log('ko');
+            }
+        }
+    }
+
+    function prepareupdate(){
+        $("#formdetail :input").prop("disabled", false);
+        $("#submitmodif").show();
+    }
+
+</script>

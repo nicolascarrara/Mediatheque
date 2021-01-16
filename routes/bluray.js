@@ -29,25 +29,22 @@ const MongoClient = mongodb.MongoClient
 var db
 var sess
 
-MongoClient.connect(process.env['DATABASE_URL'], { useNewUrlParser: true, useUnifiedTopology: true }, (err, database) => {
-//MongoClient.connect('mongodb://nico:zG55iE3MuExHtrCZ@localhost/biblio?authSource=biblio&w=1', (err, database) => {
+MongoClient.connect(process.env['DATABASE_URL'], { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
   if (err) return console.log(err)
-  db = database
+  db = client.db('biblio');
   console.log('connection bdd OK')
-})
 
+})
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {
   sess=req.session
  if(sess.login){
-   //res.render('index', { title: 'Express' });
-   db.collection('movies').find({}).toArray((err, result) => {
-     if (err) throw err;
-  //  console.log(result);
-    db.close();
-    return res.render('movies.ejs', {movies: result, sess: sess.login})
-   })
+   const { page = 1, limit = 12, genre = '', title = '' } = req.query;
+   let Movies = db.collection('movies')
+   const result = await Movies.find({ "movie.genre": { '$regex': genre, '$options': 'i' }, "movie.title": { '$regex': title, '$options': 'i' } }).limit(limit).skip((page - 1) * limit).toArray();
+   return res.render('movies.ejs', {movies: result, sess: sess.login})
+  
  }else{
   return res.render('login.ejs')
  }

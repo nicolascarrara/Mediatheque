@@ -350,18 +350,14 @@ router.post('/addbook', async (req, res) => {
 	pathfile = './public/images/';
 	sess = req.session
 	if (sess.login) {
-		puppeteer
-			.launch({ args: ['--no-sandbox'] })
-			.then(browser => browser.newPage())
-			.then(page => {
-				console.log(req.body.isbn);
-				return page.goto(siteUrl + req.body.isbn, { waitUntil: 'networkidle0' }).then(function () {
-					return page.content();
-				});
-			}).then(response => {
+		let browser =  await puppeteer.launch({ args: ['--no-sandbox'] })
+		const page = await browser.newPage();
+		await page.goto(siteUrl + req.body.isbn, { waitUntil: 'networkidle0' });
+		const data = await page.content();
+		await browser.close()
 				let book = new Book();
 				book.state = "0";
-				let $ = cheerio.load(response);
+				let $ = cheerio.load(data);
 				if ($('script[type="application/ld+json"]').contents()[0]) {
 					jsoninfo = ($('script[type="application/ld+json"]').contents()[0].data);
 					if (jsoninfo.offers) {
@@ -505,15 +501,6 @@ router.post('/addbook', async (req, res) => {
 
 					}
 				});
-			}).catch(function (e) {
-				console.log(e);
-				res.status(500).send()
-
-				console.log('isbn non trouvé');
-
-				// return res.render('index.jade', {error: 'Livre introuvable !', sess: sess.login})
-			});
-
 	} else {
 		return res.render('login.ejs')
 	}

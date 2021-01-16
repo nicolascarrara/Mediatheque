@@ -11,11 +11,11 @@
   <div class="form-group">
     <div id="spinner" class="spinner-border text-primary" style="display:none" role="status"><span class="sr-only">Loading...</span></div>
 
-      <div id="formaddbook" class="input-group mb-3">
-          <input type="text" class="form-control" id="isbn" name="isbn" placeholder="Entrer isbn">
+      <div id="formaddmovie" class="input-group mb-3">
+          <input type="text" class="form-control" id="ean" name="ean" placeholder="Entrer code barre">
         <div class="input-group-append">
-          <button  class="input-group-text btn btn-primary" type="button" onclick="addBook()">Ajouter</button>
-           <button  class="btn btn-primary" type="button" onclick="addBookAdvanced()">Ajout avancé</button>
+          <button  class="input-group-text btn btn-primary" type="button" onclick="addMovie()">Ajouter</button>
+           <button  class="btn btn-primary" type="button" onclick="addMovieAdvanced()">Ajout avancé</button>
         </div>
       </div>
     </div>
@@ -367,17 +367,17 @@
       window.location.replace("/addbookadvanced?isbn="+document.getElementById('isbn').value);
 
     }
-       function addBook () {
-         let form=document.getElementById('formaddbook');
-         var isbn = {
-           isbn: document.getElementById('isbn').value
+       function addMovie () {
+         let form=document.getElementById('formaddmovie');
+         var ean = {
+           ean: document.getElementById('ean').value
          }
-         document.getElementById('formaddbook').style.display="none";
+         document.getElementById('formaddmovie').style.display="none";
          document.getElementById('spinner').style.display= 'block';
          var xhr = new window.XMLHttpRequest()
-         xhr.open('POST', '/addbook', true)
+         xhr.open('POST', '/movies/addmovie', true)
          xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-         xhr.send(JSON.stringify(isbn))
+         xhr.send(JSON.stringify(ean))
          xhr.onreadystatechange = function(){
       		if(xhr.readyState == 4 && xhr.status == 200){
             var jsonResponse = JSON.parse(xhr.responseText);
@@ -388,7 +388,7 @@
               flash=document.getElementById('response');
               flash.innerHTML='<div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Oh mince!</strong> il semblerait qu\'il n\'y ait aucun résultat pour cet ISBN.</div>'
           }
-          document.getElementById('formaddbook').style.display="flex";
+          document.getElementById('formaddmovie').style.display="flex";
           document.getElementById('spinner').style.display= 'none';
       	}
        }

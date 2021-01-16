@@ -520,21 +520,7 @@ router.post('/addbook', async (req, res) => {
 })
 
 router.post('/updatebook', (req, res) => {
-	console.log(req.body.id);
 
-	/*{ "id": "6001f824d529973a24db51aa",
-	 "title": "De la prolifération des homoncules sur le devenir de l'espèce",
-	  "resume": " Après De l'excès d'efficacité des systèmes paranoïaques et Des ravages du manque \r\nde sincérité dans les relations humaines, Olivier Bardolle continue d'instruire le procès de l'hypermodernité. Sur un mode imprécatoire, mais non dénué d'humour, l'auteur débusque ici l'homoncule qui sommeille en chacun de nous et rêve de prendre les commandes - un être avide, obsessionnel, égoïste. et surtout indifférent aux désastres qui s'accumulent autour de lui et aux questions essentielles du moment : quelles sont par exemple les limites de la croissance et de \r\nla démographie ? (autrement dit : combien d'êtres humains convertis au mode de vie occidental notre planète peut-elle supporter ?) \r\n \r\nInspiré de lectures aussi variées qu'abondantes, De la prolifération des homoncules sur \r\nle devenir de l'espèce analyse en profondeur le naufrage, qui voit le bar se vider en une frénésie de consommation tandis que le paquebot fait eau de toute part : dévastation écologique due aux phénoménales proportions, enlaidissement du monde, effondrement des valeurs du savoir-vivre ensemble, guerre des clans, ressentiment général accentué par de nouvelles technologies toujours plus isolantes - entre mille autres maux contemporains. \r\n \r\nLe pire n'est jamais certain, disait-on autrefois, mais il se déploie pourtant chaque jour sous nos yeux. La révolution de nos comportements n'est déjà plus affaire de bonne volonté mais de pressante nécessité. Entre volonté de rigueur et souci de l'urgence, Olivier Bardolle sonne le réveil  des consciences.",
-	   "author": "Olivier Bardolle",
-		"collection": "Esprit Des Peninsules",
-		 "date": "2008",
-		  "editor": "L'esprit des péninsules",
-		   "page": "208",
-			"format": "Broché",
-			 "genre": "Sciences humaines & Spiritualité",
-			  "link": ["Sociologie urbaine", "Français", "13,5 x 21,1 x 1,8 cm", "3.36"],
-			   "price": "20.2" }
-			   */
 	var myquery = { _id: new mongodb.ObjectID(req.body.id) };
 	var newvalues = { $set: { "book.title": req.body.title,"book.resume":req.body.resume,"book.author":req.body.author,"book.collection":req.body.collection,"book.date":req.body.date,"book.editor":req.body.editor,"book.page":req.body.page,"book.format":req.body.format,"book.genre":req.body.genre,"book.price":req.body.price,"book.link":req.body.link,"book.size":req.body.size,"book.language":req.body.language,"book.median":req.body.median } };
 	db.collection('books').findAndModify(myquery, [], newvalues,

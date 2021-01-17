@@ -73,4 +73,49 @@ router.post('/addmovie', async function(req, res) {
 
 
 });
+
+router.get('/quota', async function (req, res) {
+  sess = req.session
+  pathfile = './public/images/';
+  value = req.query.value;
+  if (sess.login) {
+    const resp = await axios.get(urlapi + "quota.php?json" );
+    console.log(resp.data);
+    if (resp) {
+      console.log('JSON output', resp.data.fetchs);
+      res.status(200).send(resp.data.fetchs)
+    } else {
+      res.status(500).send()
+    }
+  } else {
+    return res.render('login.ejs')
+  }
+});
+
+router.get('/searchmovie', async function (req, res) {
+  sess = req.session
+  pathfile = './public/images/';
+  value = req.query.value;
+  if (sess.login) {
+    if ((parseFloat(value) == parseInt(value)) && !isNaN(value)) { 
+      url = "http://www.dvdfr.com/api/search.php?gencode=" + value;
+    }else{
+      url = "http://www.dvdfr.com/api/search.php?title=" + value;
+    }
+    const resp = await axios.get(urlapi + "search.php?title=" + req.query.value);
+    console.log(resp.data);
+    jsonresp = JSON.parse(xmlParser.toJson(resp.data))
+    if (resp) {
+      console.log('JSON output', jsonresp.dvds);
+      res.status(200).send(jsonresp.dvds)
+    } else {
+      res.status(500).send()
+    }
+
+  } else {
+    return res.render('login.ejs')
+  }
+
+
+});
 module.exports = router;

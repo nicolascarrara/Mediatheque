@@ -11,9 +11,6 @@ const fs = require('fs')
 let request = require('request')
 let pathfile = '';
 router.use('/public', express.static('public'));
-let urlapi = "http://api.music-story.com/fr"
-const accesstoken ="3beb354d79ac47191734f4b71ee3b9300305246d";
-const secrettoken ="2e1ca98ab37730f8d111e4ff75895bc668da2f91";
 
 const download = (url, path, callback) => {
     request.head(url, (err, res, body) => {
@@ -24,8 +21,7 @@ const download = (url, path, callback) => {
 }
 
 class Music {
-    constructor(title = null, state = 1) {
-        this.title = title;
+    constructor(state = 1) {
         this.state = state;
     }
 }
@@ -51,7 +47,6 @@ router.get('/', async function (req, res, next) {
         let Music = db.collection('music')
         const result = await Music.find({ "music.genre": { '$regex': genre, '$options': 'i' }, "music.title": { '$regex': title, '$options': 'i' } }).limit(limit).skip((page - 1) * limit).toArray();
         return res.render('music.ejs', { musics: result, sess: sess.login })
-
     } else {
         return res.render('login.ejs')
     }
@@ -61,20 +56,11 @@ router.get('/', async function (req, res, next) {
 
 router.post('/addmusic', async function (req, res) {
     sess = req.session
-    pathfile = './public/images/';
-    key = 'VBwFQyAFtuPnXVSAbZsW'
-    secret = 'yAsSQmGUsPkQaBdBvZSWMHlMzqkKBaaT'
+    pathfile = './public/images/musics';
     music = new Music();
     if (sess.login) {
         value = req.body.id;
-        url = 'https://api.discogs.com/releases/' + value +'?key='+key+'&secret='+secret
-    //     //         if (respcover.data && respcover.status == 200) {
-    //     //             // console.log(respcover.status)
-    //     //             // console.log(respcover.data)
-    //     //             music.cover = respcover.data.images[0].image
-    //     //         } else {
-    //     //             music.cover = "https://dummyimage.com/600x400/000/ffffff&text=No+cover"
-    //     //         }
+        url = process.env['DISCOG_API'] + '/releases/' + value + '?key=' + process.env['DISCOG_KEY'] + '&secret=' + process.env['DISCOG_SECRET']
         const resp = await axios.get(url, { validateStatus: false });
         if (resp.data && resp.status == 200) {
         result=resp.data
@@ -98,74 +84,22 @@ router.post('/addmusic', async function (req, res) {
 
 });
 
-router.get('/quota', async function (req, res) {
-    sess = req.session
-    pathfile = './public/images/';
-    value = req.query.value;
-    if (sess.login) {
-        const resp = await axios.get(urlapi + "quota.php?json");
-        console.log(resp.data);
-        if (resp) {
-            console.log('JSON output', resp.data.fetchs);
-            res.status(200).send(resp.data.fetchs)
-        } else {
-            res.status(500).send()
-        }
-    } else {
-        return res.render('login.ejs')
-    }
-});
-
 router.get('/searchmusic', async function (req, res) {
     sess = req.session
-    pathfile = './public/images/';
     value = req.query.value;
-    country='FR'
-    key = 'VBwFQyAFtuPnXVSAbZsW'
-    secret = 'yAsSQmGUsPkQaBdBvZSWMHlMzqkKBaaT'
     if ((parseFloat(value) == parseInt(value)) && !isNaN(value)) {
-        url = 'https://api.discogs.com/database/search?barcode=' + value + '&key=' + key + '&secret=' + secret
+        url = process.env['DISCOG_API'] + '/database/search?barcode=' + value + '&key=' + process.env['DISCOG_KEY'] + '&secret=' + process.env['DISCOG_SECRET']
     } else {
-        url = 'https://api.discogs.com/database/search?q=' + value + '&key=' + key + '&secret=' + secret
+        url = process.env['DISCOG_API'] + '/database/search?q=' + value + '&key=' + process.env['DISCOG_KEY'] + '&secret=' + process.env['DISCOG_SECRET']
     }
-    
-    //  if (sess.login) {
+     if (sess.login) {
         const resp = await axios.get(url);
-        console.log(resp.data)
         pagination= resp.data.pagination
         musics = resp.data.results
         res.status(200).send(musics)
-        console.log()
-        
-    
-    
-   // res.status(200).send(resp.data)
-    // if (undefined != resp.data.releases) {
-    //     let musics = resp.data.releases
-    //     musics = musics.filter(music => !music.title.toLowerCase().includes("titled"));
-    //     musics = musics.filter(music => !music.title.toLowerCase().includes("suggestion"));
-
-    //     // if (musics.length > 0 && Array.isArray(musics)) {
-    //     //     for await (const music of musics) {
-    //     //         coverurl = "http://coverartarchive.org/release/" + music.id
-    //     //         const respcover = await axios.get(coverurl, { validateStatus: false });
-    //     //         if (respcover.data && respcover.status == 200) {
-    //     //             // console.log(respcover.status)
-    //     //             // console.log(respcover.data)
-    //     //             music.cover = respcover.data.images[0].image
-    //     //         } else {
-    //     //             music.cover = "https://dummyimage.com/600x400/000/ffffff&text=No+cover"
-    //     //         }
-    //     //     }
-    //         res.status(200).send(musics)
-    //     } else {
-    //     res.status(200).send()
-    //     }
-    
-
-    //} else {
-    //    return res.render('login.ejs')
-    //}
+    } else {
+       return res.render('login.ejs')
+    }
 
 
 });

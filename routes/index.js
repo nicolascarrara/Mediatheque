@@ -223,7 +223,8 @@ router.post('/amzlist', async function (req, res, next) {
 
 });
 class Book {
-	constructor(title = null, state = null, cover = null, median = null, genre = null, resume = null, link = null, author = null, date = null, collection = null, page = null, format = null, editor = null, language = null, isbn10 = null, isbn13 = null, price = null, size = null) {
+	constructor(place="",title = null, state = null, cover = null, median = null, genre = null, resume = null, link = null, author = null, date = null, collection = null, page = null, format = null, editor = null, language = null, isbn10 = null, isbn13 = null, price = null, size = null) {
+		this.place = place
 		this.title = title;
 		this.state = state;
 		this.cover = cover;
@@ -316,7 +317,7 @@ router.post('/delete', async function (req, res) {
 	if (sess.login) {
 		let Books = db.collection('books')
 		const result = await Books.findOne({ _id: new mongodb.ObjectID(req.body.id)});
-		fs.unlinkSync(result.book.cover)
+		// fs.unlinkSync(result.book.cover)
 	 	const resultat = await Books.remove({ _id: new mongodb.ObjectID(req.body.id) }, { justOne: true });
 		if	(resultat){
 			res.status(200).send(JSON.stringify({ 'id': req.body.id }))
@@ -388,12 +389,17 @@ router.post('/addbook', async (req, res) => {
 				} else {
 					book.title = title;
 				}
-
-				let cover = $('div#cover div.coverPlusBtnsCont img#book-cover').attr('src');
-				if (cover.includes("_SX150_")) {
-					cover = cover.replace("_SX150_", "");
+				let cover =''
+				cover = $('div#cover div.coverPlusBtnsCont img#book-cover').attr('src');
+				if(cover!=undefined){
+					if (cover.includes("_SX150_")) {
+						cover = cover.replace("_SX150_", "");
+					} else {
+						cover = "https://dummyimage.com/600x400/FFF/8d918c.jpg&text=aucune+image"
+					}
+				}else{
+					cover = "https://dummyimage.com/600x400/FFF/8d918c.jpg&text=aucune+image"
 				}
-
 				let genre = $('ul.breadcrumb.breadcrumb-top.d-none.d-md-inline-block li a:nth-child(3)').text();
 				book.genre = genre;
 				if (book.genre == "") {
@@ -412,6 +418,9 @@ router.post('/addbook', async (req, res) => {
 				//console.log($('tr:nth-child(1) .used-price').first());
 
 				medianprice == undefined ? medianprice = 0 : medianprice = parseFloat(medianprice.split('€')[0].trim().replace(',', '.'));
+				if( !isNaN(medianprice)){
+					medianprice=0;
+				}
 				console.log(medianprice);
 				book.median = medianprice;
 				let formatpages = $('div#book-more-more-details-mobile div.container.p-0 div.row div.col').first().text().split(',');
@@ -472,7 +481,7 @@ router.post('/addbook', async (req, res) => {
 						default:
 					}
 				});
-				pathfile = pathfile + (book.isbn10) + (book.isbn13) + (Math.random().toString(36).slice(-10)) + (path.extname(cover));
+				pathfile = pathfile + (Math.random().toString(16).slice(-8))+ (Math.random().toString(36).slice(-10)) + (path.extname(cover));
 				book.cover = pathfile;
 				console.log(pathfile);
 

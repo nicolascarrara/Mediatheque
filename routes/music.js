@@ -1,6 +1,6 @@
 var express = require('express');
 const session = require('express-session');
-let xmlParser = require('xml2json');
+const fetch = require('node-fetch');
 var router = express.Router();
 const mongodb = require('mongodb')
 const cheerio = require("cheerio");
@@ -14,6 +14,7 @@ router.use('/public', express.static('public'));
 
 const download = (url, path, callback) => {
     request.head(url, (err, res, body) => {
+        console.log(url);
         request(url)
             .pipe(fs.createWriteStream(path))
             .on('close', callback)
@@ -45,18 +46,16 @@ router.get('/', async function (req, res, next) {
     if (sess.login) {
         const { page = 1, limit = 12, genre = '', title = '' } = req.query;
         let Music = db.collection('music')
-        const result = await Music.find({ "music.genre": { '$regex': genre, '$options': 'i' }, "music.title": { '$regex': title, '$options': 'i' } }).limit(limit).skip((page - 1) * limit).toArray();
+        const result = await Music.find({}).limit(limit).skip((page - 1) * limit).toArray();
         return res.render('music.ejs', { musics: result, sess: sess.login })
     } else {
         return res.render('login.ejs')
     }
-
 });
-
 
 router.post('/addmusic', async function (req, res) {
     sess = req.session
-    pathfile = './public/images/musics';
+    pathfile = './public/images/musics/';
     music = new Music();
     if (sess.login) {
         value = req.body.id;
@@ -67,12 +66,30 @@ router.post('/addmusic', async function (req, res) {
         console.log(result)
         music.title = result.title
         music.tracklist = result.tracklist
-        if (result.image){
-            music.cover = result.image[0]
-        }else{
-            music.cover = result.thumb
-        }
+        music.country = result.country
+        music.releasedate = result.released
+        music.link = result.uri
+        music.genres = result.genres
+        music.styles = result.styles
+        music.labels = result.labels
+        music.artists = result.artists
+        music.identifiers = result.identifiers
+        music.images = result.images
+        pathfile = pathfile + (result.title.replace(" ", "")) + (result.released.replace(" ", "")) + (Math.random().toString(36).slice(-10)) + (path.extname(result.thumb));
+        music.cover = pathfile;
+        let Musics = db.collection('music')
+        const dbresult = await Musics.insertOne({ music });
+        if (fs.existsSync(pathfile)) {
+            console.log('image deja dl')
             res.status(200).send(music)
+            //res.status(200).send(r.ops[0])
+        } else {
+            const response = await fetch(result.thumb);
+            const buffer = await response.buffer();
+            fs.writeFile(pathfile, buffer, () =>
+                console.log('✅ Done!'));
+            res.status(200).send(music)
+        }
     }else {
             res.status(404).send()
         }

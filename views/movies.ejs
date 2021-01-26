@@ -268,9 +268,9 @@ window.onload=apiquota();
           console.log("ok")
           if (undefined!=movies){
           if (movies.length>0&&Array.isArray(movies)){
-             html = movies.map( movie => '<li class="list-group-item d-flex justify-content-between align-items-center"><img src="' + movie.cover + '" alt="" style="height: 20vh;">' + movie.titres.fr + '<span class="badge badge-primary badge-pill"> ' + movie.media + '</span></li>').join('');
+             html = movies.map( movie => '<li class="list-group-item d-flex justify-content-between align-items-center"><img src="' + movie.cover + '" alt="" style="height: 20vh;">' + movie.titres.fr + '<span class="badge badge-primary badge-pill"> ' + movie.media + '</span><input type="button" onclick="addMovie(\'' + movie.id + '\')" value="Ajouter"></li>').join('');
             }else{
-              html = '<li class="list-group-item d-flex justify-content-between align-items-center"><img src="' + movies.cover + '" alt="" style="height: 20vh;">' + movies.titres.fr + '<span class="badge badge-primary badge-pill"> ' + movies.media + '</span></li>'
+              html = '<li class="list-group-item d-flex justify-content-between align-items-center"><img src="' + movies.cover + '" alt="" style="height: 20vh;">' + movies.titres.fr + '<span class="badge badge-primary badge-pill"> ' + movies.media + '</span><input type="button" onclick="addMovie(\'' + movies.id + '\')" value="Ajouter"></li>'
             }
           }else{
             html = '<li class="list-group-item d-flex justify-content-between align-items-center">Aucun résultat</li>'
@@ -279,30 +279,22 @@ window.onload=apiquota();
         }
       }
     
-       function addMovie () {
-         let form=document.getElementById('formaddmovie');
-         var ean = {
-           ean: document.getElementById('ean').value
-         }
-         document.getElementById('formaddmovie').style.display="none";
-         document.getElementById('spinner').style.display= 'block';
-         var xhr = new window.XMLHttpRequest()
-         xhr.open('POST', '/movies/addmovie', true)
-         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-         xhr.send(JSON.stringify(ean))
-         xhr.onreadystatechange = function(){
-      		if(xhr.readyState == 4 && xhr.status == 200){
-            var jsonResponse = JSON.parse(xhr.responseText);
-            populateBook(jsonResponse);
-            flash=document.getElementById('response');
-            flash.innerHTML='<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Parfait ! </strong> "<b>'+jsonResponse.book.title+'</b>" a correctement été ajouté !</div>';
-      		}else if(xhr.readyState == 4 && xhr.status != 200){
-              flash=document.getElementById('response');
-              flash.innerHTML='<div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Oh mince!</strong> il semblerait qu\'il n\'y ait aucun résultat pour cet ISBN.</div>'
+      async function addMovie (idfilm) {
+        var id = {
+          id: idfilm
+        }
+        const source = await fetch("movies/addmovie", {
+          method: "POST",
+          body: JSON.stringify(id),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
           }
-          document.getElementById('formaddmovie').style.display="flex";
-          document.getElementById('spinner').style.display= 'none';
-      	}
+        });
+        const data = await source.json();
+        const movie = data
+        console.log(movie)
+      	
        }
      </script>
   

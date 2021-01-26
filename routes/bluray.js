@@ -55,18 +55,15 @@ router.get('/', async function(req, res, next) {
 
 router.post('/addmovie', async function(req, res) {
   sess = req.session
-  pathfile = './public/images/';
+  pathfile = './public/images/movies/';
   if (sess.login) {
-    console.log(req.body.ean);
-    const resp = await axios.get(urlapi+"search.php?gencode="+req.body.ean);
-    console.log(resp.data);
+    const resp = await axios.get(urlapi+"dvd.php?id="+req.body.id);
+    jsonresp = JSON.parse(xmlParser.toJson(resp.data))
     if  (resp){
-      console.log('JSON output', xmlParser.toJson(resp.data));
-      res.status(200).send(resp.data)
+      res.status(200).send(jsonresp)
     }else{
       res.status(500).send()
     }
-    
   } else {
     return res.render('login.ejs')
   }
@@ -76,7 +73,6 @@ router.post('/addmovie', async function(req, res) {
 
 router.get('/quota', async function (req, res) {
   sess = req.session
-  pathfile = './public/images/';
   value = req.query.value;
   if (sess.login) {
     const resp = await axios.get(urlapi + "quota.php?json" );
@@ -94,7 +90,6 @@ router.get('/quota', async function (req, res) {
 
 router.get('/searchmovie', async function (req, res) {
   sess = req.session
-  pathfile = './public/images/';
   value = req.query.value;
   if (sess.login) {
     if ((parseFloat(value) == parseInt(value)) && !isNaN(value)) { 
@@ -102,7 +97,7 @@ router.get('/searchmovie', async function (req, res) {
     }else{
       url = "http://www.dvdfr.com/api/search.php?title=" + value;
     }
-    const resp = await axios.get(urlapi + "search.php?title=" + req.query.value);
+    const resp = await axios.get(url);
     console.log(resp.data);
     jsonresp = JSON.parse(xmlParser.toJson(resp.data))
     if (resp) {
